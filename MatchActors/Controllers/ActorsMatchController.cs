@@ -7,9 +7,16 @@ namespace MatchActors.Controllers;
 [Route("[controller]")]
 public class ActorsMatchController : ControllerBase
 {
+    private readonly IMovieSearchService _movieSearchService;
+
+    public ActorsMatchController(IMovieSearchService movieSearchService)
+    {
+        _movieSearchService = movieSearchService;
+    }
+    
     [HttpPost("movies")]
     public async Task<ActionResult<MatchActorsResponse>> Post(MatchActorsRequest request, CancellationToken token)
     {
-        return await new MovieSearchService().MovieSearch(request, token);
+        return await _movieSearchService.MovieSearch(request, token);
     }
 }

@@ -6,7 +6,7 @@ using Npgsql;
 
 namespace MatchActors.Services;
 
-public class MovieSearchService
+public class MovieSearchService : IMovieSearchService
 {
     public async Task<MatchActorsResponse> MovieSearch(MatchActorsRequest request, CancellationToken token)
     {
