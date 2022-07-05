@@ -9,7 +9,7 @@ namespace MatchActors.Controllers;
 [Route("[controller]")]
 public class ActorsMatchController : ControllerBase
 {
-    [HttpPost]
+    [HttpPost("movies")]
     public async Task<IEnumerable<string>> Post(MatchActorsRequest request)
     {
         var result = new List<string>();
