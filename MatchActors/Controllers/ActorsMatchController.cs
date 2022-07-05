@@ -15,7 +15,7 @@ public class ActorsMatchController : ControllerBase
     }
     
     [HttpPost("movies")]
-    public async Task<ActionResult<MatchActorsResponse>> Post(MatchActorsRequest request, CancellationToken token)
+    public async Task<ActionResult<MatchActorsResponse>> Post([FromBody]MatchActorsRequest request, CancellationToken token)
     {
         return await _movieSearchService.MovieSearch(request, token);
     }

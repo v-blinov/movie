@@ -1,29 +1,29 @@
 ﻿using Dapper;
 using MatchActors.Contracts;
+using MatchActors.Infrastructure.Storage;
 using MatchActors.Models;
 using Newtonsoft.Json;
 using Npgsql;
 
 namespace MatchActors.Services;
 
-public class MovieSearchService : IMovieSearchService
+internal sealed class MovieSearchService : IMovieSearchService
 {
+    private readonly IActorRepository _actorRepository;
+
+    public MovieSearchService(IActorRepository actorRepository)
+    {
+        _actorRepository = actorRepository;
+    }
+    
     public async Task<MatchActorsResponse> MovieSearch(MatchActorsRequest request, CancellationToken token)
     {
         var result = new List<string>();
 
         var key = "k_msuvty8y";
 
-        var cs = @"Server=127.0.0.1:5432;Database=postgres;User ID=admin;Password=admin";
-
-        using var con = new NpgsqlConnection(cs);
-
-        con.Open();
-        var q1 = "select actor_id from actors where name='" + request.Actor1 + "';";
-        var q2 = "select actor_id from actors where name='" + request.Actor2 + "';";
-
-        var val1 = con.ExecuteScalar<string>(q1);
-        var val2 = con.ExecuteScalar<string>(q2);
+        var val1 = await _actorRepository.GetActorId(request.Actor1, token);
+        var val2 = await _actorRepository.GetActorId(request.Actor2, token);
 
         var clnt = new HttpClient();
 

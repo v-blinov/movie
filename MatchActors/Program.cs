@@ -1,8 +1,10 @@
+using MatchActors.Infrastructure.Storage;
 using MatchActors.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IMovieSearchService, MovieSearchService>();
+builder.Services.AddScoped<IActorRepository, ActorRepository>();
 
 builder.Services.AddControllers();
 
