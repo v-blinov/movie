@@ -1,59 +1,47 @@
-﻿using Dapper;
-using MatchActors.Contracts;
+﻿using MatchActors.Contracts;
+using MatchActors.Infrastructure.MovieClient;
 using MatchActors.Infrastructure.Storage;
-using MatchActors.Models;
-using Newtonsoft.Json;
-using Npgsql;
 
 namespace MatchActors.Services;
 
 internal sealed class MovieSearchService : IMovieSearchService
 {
     private readonly IActorRepository _actorRepository;
+    private readonly IMovieClient _movieClient;
 
-    public MovieSearchService(IActorRepository actorRepository)
+    public MovieSearchService(IActorRepository actorRepository, IMovieClient movieClient)
     {
         _actorRepository = actorRepository;
+        _movieClient = movieClient;
     }
     
     public async Task<MatchActorsResponse> MovieSearch(MatchActorsRequest request, CancellationToken token)
     {
         var result = new List<string>();
 
-        var key = "k_msuvty8y";
-
         var val1 = await _actorRepository.GetActorId(request.Actor1, token);
         var val2 = await _actorRepository.GetActorId(request.Actor2, token);
 
-        var clnt = new HttpClient();
-
-        if (val1 == null)
+        if(val1 == null)
         {
-            var c = await clnt.GetAsync("https://imdb-api.com/en/API/SearchName/" + key + "/"+ request.Actor1);
-            var res = await c.Content.ReadAsStringAsync();
-            var a = JsonConvert.DeserializeObject<Data>(res);
-
-            val1 = a.Results.FirstOrDefault(t => request.Actor1 == t.Title)?.Id;
+            var movieClientResponse = await _movieClient.GetActorId(request.Actor1, token);
+            val1 = movieClientResponse?.Results.FirstOrDefault(p => string.Compare(p.Title, request.Actor1, StringComparison.InvariantCultureIgnoreCase) == 0)?.Id;
         }
 
-        if (val2 == null)
+        if(val2 == null)
         {
-            var c = await clnt.GetAsync("https://imdb-api.com/en/API/SearchName/" + key + "/" + request.Actor2);
-            var res = await c.Content.ReadAsStringAsync();
-            var a = JsonConvert.DeserializeObject<Data>(res);
-
-            val2 = a.Results.FirstOrDefault(t => request.Actor2 == t.Title)?.Id;
+            var movieClientResponse = await _movieClient.GetActorId(request.Actor2, token);
+            val2 = movieClientResponse?.Results.FirstOrDefault(p => string.Compare(p.Title, request.Actor2, StringComparison.InvariantCultureIgnoreCase) == 0)?.Id;
         }
 
         if (val1 != null && val2 != null)
         {
-            var m1 = await clnt.GetAsync("https://imdb-api.com/en/API/Name/" + key + "/" + val1);
-            var res1 = await m1.Content.ReadAsStringAsync();
-            var movs1 = JsonConvert.DeserializeObject<ActorData>(res1).CastMovies;
-
-            var m2 = await clnt.GetAsync("https://imdb-api.com/en/API/Name/" + key + "/" + val2);
-            var res2 = await m2.Content.ReadAsStringAsync();
-            var movs2 = JsonConvert.DeserializeObject<ActorData>(res2).CastMovies;
+            var actor1Content = await _movieClient.GetActorContent(val1, token);
+            var actor2Content = await _movieClient.GetActorContent(val2, token);
+            
+            if (actor1Content is null || !actor1Content.CastMovies.Any() 
+             || actor2Content is null || !actor2Content.CastMovies.Any())
+                return new MatchActorsResponse { Movies = Enumerable.Empty<string>() };
 
             // фильтр MoviesOnly
             //if (request.MoviesOnly == true)
@@ -62,9 +50,9 @@ internal sealed class MovieSearchService : IMovieSearchService
             //    movs1 = movs1.Where(m => m.Role == "Actress" || m.Role == "Actor").ToArray();
             //}
 
-            foreach (var movies1 in movs1)
+            foreach (var movies1 in actor1Content.CastMovies)
             {
-                foreach (var movies2 in movs2)
+                foreach (var movies2 in actor2Content.CastMovies)
                 {
                     if (movies1.Id == movies2.Id)
                     {
