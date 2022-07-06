@@ -1,6 +1,7 @@
+using MatchActors.Application.Models;
 using MatchActors.Contracts;
 using MatchActors.Exceptions;
-using MatchActors.Services;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatchActors.Controllers;
@@ -8,11 +9,11 @@ namespace MatchActors.Controllers;
 [Route("[controller]")]
 public class ActorsMatchController : ControllerBase
 {
-    private readonly IMovieSearchService _movieSearchService;
+    private readonly IMediator _mediator;
 
-    public ActorsMatchController(IMovieSearchService movieSearchService)
+    public ActorsMatchController(IMediator mediator)
     {
-        _movieSearchService = movieSearchService;
+        _mediator = mediator;
     }
     
     [HttpPost("movies")]
@@ -20,7 +21,13 @@ public class ActorsMatchController : ControllerBase
     {
         try
         {
-            var movies = await _movieSearchService.MovieSearch(request, token);
+            var movies = await _mediator.Send(new MatchActorsCommand
+            {
+                Actor1 = request.Actor1,
+                Actor2 = request.Actor2,
+                MoviesOnly = request.MoviesOnly
+            }, token);
+            
             return Ok(movies);
         }
         catch(ActorNotFoundException ex)
