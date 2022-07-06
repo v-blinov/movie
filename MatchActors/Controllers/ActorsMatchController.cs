@@ -16,6 +16,12 @@ public class ActorsMatchController : ControllerBase
         _mediator = mediator;
     }
     
+    /// <summary>
+    /// Получить список единиц контента, где участуют оба актера
+    /// </summary>
+    /// <param name="request">Параметры запроса</param>
+    /// <param name="token">CancellationToken</param>
+    /// <returns>Список названий единиц контента</returns>
     [HttpPost("movies")]
     public async Task<ActionResult<MatchActorsResponse>> Post([FromBody]MatchActorsRequest request, CancellationToken token)
     {
