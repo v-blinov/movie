@@ -34,27 +34,9 @@ internal sealed class MovieSearchService : IMovieSearchService
         //    movs1 = movs1.Where(m => m.Role == "Actress" || m.Role == "Actor").ToArray();
         //}
 
-        var result = new List<string>();
-        foreach(var movies1 in actor1Content.CastMovies)
-        {
-            foreach(var movies2 in actor2Content.CastMovies)
-            {
-                if(movies1.Id == movies2.Id)
-                {
-                    result.Add(movies1.Title);
-                }
-            }
-        }
-
-        var content1Ids = actor1Content.CastMovies.Select(p => p.Id);
-        var content2Ids = actor2Content.CastMovies.Select(p => p.Id);
-
-        var intersectActorContentIds = content1Ids.Intersect(content2Ids, StringComparer.Ordinal);
-
-        var intersectActorContents = actor1Content.CastMovies.Where(p => intersectActorContentIds.Contains(p.Id)).Select(p => p.Title).ToArray();
         return new MatchActorsResponse
         {
-            Movies = intersectActorContents
+            Movies = GetCommonContent(actor1Content, actor2Content)
         };
     }
 
@@ -82,5 +64,18 @@ internal sealed class MovieSearchService : IMovieSearchService
         //TODO: Положить значение в базу
 
         return actorId;
+    }
+
+    private string[] GetCommonContent(ActorContent actor1Content, ActorContent actor2Content)
+    {
+        var content1Ids = actor1Content.CastMovies.Select(p => p.Id);
+        var content2Ids = actor2Content.CastMovies.Select(p => p.Id);
+
+        var intersectActorContentIds = content1Ids.Intersect(content2Ids, StringComparer.Ordinal);
+
+        return actor1Content.CastMovies
+                            .Where(p => intersectActorContentIds.Contains(p.Id))
+                            .Select(p => p.Title)
+                            .ToArray();
     }
 }
