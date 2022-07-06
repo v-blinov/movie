@@ -1,10 +1,9 @@
 ﻿using MatchActors.Application.Interfaces;
 using MatchActors.Application.Models;
-using MatchActors.Exceptions;
-using MatchActors.Infrastructure.MovieClient;
-using MatchActors.Infrastructure.Storage;
+using MatchActors.Domain.Exceptions;
+using MatchActors.Domain.Interfaces;
 
-namespace MatchActors.Services;
+namespace MatchActors.Domain.Services;
 
 internal sealed class MovieSearchService : IMovieSearchService
 {

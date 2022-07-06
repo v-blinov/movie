@@ -1,7 +1,8 @@
 using MatchActors.Application.Interfaces;
+using MatchActors.Domain.Interfaces;
+using MatchActors.Domain.Services;
 using MatchActors.Infrastructure.MovieClient;
 using MatchActors.Infrastructure.Storage;
-using MatchActors.Services;
 using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);

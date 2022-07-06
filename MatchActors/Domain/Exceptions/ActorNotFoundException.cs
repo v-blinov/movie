@@ -1,4 +1,4 @@
-﻿namespace MatchActors.Exceptions;
+﻿namespace MatchActors.Domain.Exceptions;
 
 internal sealed class ActorNotFoundException : Exception
 {

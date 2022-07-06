@@ -1,4 +1,5 @@
-﻿using MatchActors.Infrastructure.MovieClient.ResponseModels;
+﻿using MatchActors.Domain.Interfaces;
+using MatchActors.Infrastructure.MovieClient.ResponseModels;
 
 namespace MatchActors.Infrastructure.MovieClient;
 

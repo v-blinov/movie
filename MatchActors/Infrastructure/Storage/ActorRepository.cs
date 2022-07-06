@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using MatchActors.Domain.Interfaces;
 using Npgsql;
 
 namespace MatchActors.Infrastructure.Storage;

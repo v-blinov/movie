@@ -1,6 +1,6 @@
 using MatchActors.Infrastructure.MovieClient.ResponseModels;
 
-namespace MatchActors.Infrastructure.MovieClient;
+namespace MatchActors.Domain.Interfaces;
 
 internal interface IMovieClient
 {

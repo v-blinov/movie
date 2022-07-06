@@ -1,6 +1,6 @@
 using MatchActors.Application.Models;
 using MatchActors.Contracts;
-using MatchActors.Exceptions;
+using MatchActors.Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

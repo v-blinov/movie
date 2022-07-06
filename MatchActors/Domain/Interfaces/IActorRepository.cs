@@ -1,4 +1,4 @@
-﻿namespace MatchActors.Infrastructure.Storage;
+﻿namespace MatchActors.Domain.Interfaces;
 
 internal interface IActorRepository
 {
