@@ -1,5 +1,7 @@
 ﻿using MatchActors.Contracts;
+using MatchActors.Exceptions;
 using MatchActors.Infrastructure.MovieClient;
+using MatchActors.Infrastructure.MovieClient.ResponseModels;
 using MatchActors.Infrastructure.Storage;
 
 namespace MatchActors.Services;
@@ -17,51 +19,68 @@ internal sealed class MovieSearchService : IMovieSearchService
     
     public async Task<MatchActorsResponse> MovieSearch(MatchActorsRequest request, CancellationToken token)
     {
+        var actor1Content = await GetActorContent(request.Actor1, token);
+        if (!actor1Content.CastMovies.Any())
+            return new MatchActorsResponse { Movies = Enumerable.Empty<string>() };
+        
+        var actor2Content = await GetActorContent(request.Actor2, token);
+        if (!actor2Content.CastMovies.Any())
+            return new MatchActorsResponse { Movies = Enumerable.Empty<string>() };
+
+        // фильтр MoviesOnly
+        //if (request.MoviesOnly == true)
+        //{
+        //    movs1 = movs1.Where(m => m.Role == "Actress" || m.Role == "Actor").ToArray();
+        //    movs1 = movs1.Where(m => m.Role == "Actress" || m.Role == "Actor").ToArray();
+        //}
+
         var result = new List<string>();
-
-        var val1 = await _actorRepository.GetActorId(request.Actor1, token);
-        var val2 = await _actorRepository.GetActorId(request.Actor2, token);
-
-        if(val1 == null)
+        foreach(var movies1 in actor1Content.CastMovies)
         {
-            var movieClientResponse = await _movieClient.GetActorId(request.Actor1, token);
-            val1 = movieClientResponse?.Results.FirstOrDefault(p => string.Compare(p.Title, request.Actor1, StringComparison.InvariantCultureIgnoreCase) == 0)?.Id;
-        }
-
-        if(val2 == null)
-        {
-            var movieClientResponse = await _movieClient.GetActorId(request.Actor2, token);
-            val2 = movieClientResponse?.Results.FirstOrDefault(p => string.Compare(p.Title, request.Actor2, StringComparison.InvariantCultureIgnoreCase) == 0)?.Id;
-        }
-
-        if (val1 != null && val2 != null)
-        {
-            var actor1Content = await _movieClient.GetActorContent(val1, token);
-            var actor2Content = await _movieClient.GetActorContent(val2, token);
-            
-            if (actor1Content is null || !actor1Content.CastMovies.Any() 
-             || actor2Content is null || !actor2Content.CastMovies.Any())
-                return new MatchActorsResponse { Movies = Enumerable.Empty<string>() };
-
-            // фильтр MoviesOnly
-            //if (request.MoviesOnly == true)
-            //{
-            //    movs1 = movs1.Where(m => m.Role == "Actress" || m.Role == "Actor").ToArray();
-            //    movs1 = movs1.Where(m => m.Role == "Actress" || m.Role == "Actor").ToArray();
-            //}
-
-            foreach (var movies1 in actor1Content.CastMovies)
+            foreach(var movies2 in actor2Content.CastMovies)
             {
-                foreach (var movies2 in actor2Content.CastMovies)
+                if(movies1.Id == movies2.Id)
                 {
-                    if (movies1.Id == movies2.Id)
-                    {
-                        result.Add(movies1.Title);
-                    }
+                    result.Add(movies1.Title);
                 }
             }
         }
 
-        return new MatchActorsResponse { Movies = result };
+        var content1Ids = actor1Content.CastMovies.Select(p => p.Id);
+        var content2Ids = actor2Content.CastMovies.Select(p => p.Id);
+
+        var intersectActorContentIds = content1Ids.Intersect(content2Ids, StringComparer.Ordinal);
+
+        var intersectActorContents = actor1Content.CastMovies.Where(p => intersectActorContentIds.Contains(p.Id)).Select(p => p.Title).ToArray();
+        return new MatchActorsResponse
+        {
+            Movies = intersectActorContents
+        };
+    }
+
+    private async Task<ActorContent> GetActorContent(string actorId, CancellationToken token)
+    {
+        var actor = await GetActorId(actorId, token);
+        var actorContent = await _movieClient.GetActorContent(actor, token);
+
+        return actorContent ?? new ActorContent();
+    }
+    
+    private async Task<string> GetActorId(string actor, CancellationToken token)
+    {
+        var actorId = await _actorRepository.GetActorId(actor, token);
+
+        if(string.IsNullOrEmpty(actorId))
+        {
+            var actors = await _movieClient.GetActorId(actor, token);
+            actorId = actors?.Results.FirstOrDefault(p => string.Compare(p.Title, actor, StringComparison.InvariantCultureIgnoreCase) == 0)?.Id;
+        }
+
+        if(string.IsNullOrEmpty(actorId))
+            throw new ActorNotFoundException($"Actor '{actor}' was not found");
+
+        //TODO: Положить значение в базу
+
+        return actorId;
     }
 }
