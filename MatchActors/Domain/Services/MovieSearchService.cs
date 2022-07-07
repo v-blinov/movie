@@ -16,28 +16,41 @@ internal sealed class MovieSearchService : IMovieSearchService
         _movieClient = movieClient;
     }
     
-    public string[] GetCommonContent(ActorContentApp actor1Content, ActorContentApp actor2Content)
+    public string[] GetCommonContent(IEnumerable<MovieApp> actor1Content, IEnumerable<MovieApp> actor2Content)
     {
         // TODO: не работать с моделями уровня App
+        if(!actor1Content.Any() || !actor2Content.Any())
+            return Array.Empty<string>();
         
-        var content1Ids = actor1Content.CastMovies.Select(p => p.Id);
-        var content2Ids = actor2Content.CastMovies.Select(p => p.Id);
+        var content1Ids = actor1Content.Select(p => p.Id);
+        var content2Ids = actor2Content.Select(p => p.Id);
 
         var intersectActorContentIds = content1Ids.Intersect(content2Ids, StringComparer.Ordinal);
 
-        return actor1Content.CastMovies
-                            .Where(p => intersectActorContentIds.Contains(p.Id))
-                            .Select(p => p.Title)
-                            .ToArray();
+        return actor1Content
+               .Where(p => intersectActorContentIds.Contains(p.Id))
+               .Select(p => p.Title)
+               .ToArray();
     }
 
-    public async Task<ActorContentApp> GetActorContent(string actorId, CancellationToken token)
+    public string[] GetOnlyMovieCommonContent(IEnumerable<MovieApp> actor1Content, IEnumerable<MovieApp> actor2Content)
     {
-        var actor = await GetActorId(actorId, token);
-        var actorContent = await _movieClient.GetActorContent(actor, token);
+        MovieApp[] GetMoviesOnly(IEnumerable<MovieApp> contents) 
+            => contents.Where(m => m.Role == "Actress" || m.Role == "Actor").ToArray();
 
-        if(actorContent is null)
-            return new ActorContentApp();
+        var actor1MoviesOnly = GetMoviesOnly(actor1Content);
+        var actor2MoviesOnly = GetMoviesOnly(actor2Content);
+        
+        return GetCommonContent(actor1MoviesOnly, actor2MoviesOnly);
+    }
+
+    public async Task<ActorContentApp> GetActorContent(string actor, CancellationToken token)
+    {
+        var actorId = await GetActorId(actor, token);
+        var actorContent = await _movieClient.GetActorContent(actorId, token);
+
+        if(actorContent is null || actorContent.CastMovies is null || !actorContent.CastMovies.Any())
+            return new ActorContentApp { CastMovies = Enumerable.Empty<MovieApp>() };
         
         return new ActorContentApp
         {
@@ -57,7 +70,7 @@ internal sealed class MovieSearchService : IMovieSearchService
         if(string.IsNullOrEmpty(actorId))
         {
             var actors = await _movieClient.GetActorId(actor, token);
-            actorId = actors?.Results.FirstOrDefault(p => string.Compare(p.Title, actor, StringComparison.InvariantCultureIgnoreCase) == 0)?.Id;
+            actorId = actors?.Results?.FirstOrDefault(p => string.Compare(p.Title, actor, StringComparison.InvariantCultureIgnoreCase) == 0)?.Id;
         }
 
         if(string.IsNullOrEmpty(actorId))

@@ -4,6 +4,7 @@ namespace MatchActors.Application.Interfaces;
 
 internal interface IMovieSearchService
 {
-    Task<ActorContentApp> GetActorContent(string actorId, CancellationToken token);
-    string[] GetCommonContent(ActorContentApp actor1Content, ActorContentApp actor2Content);
+    Task<ActorContentApp> GetActorContent(string actor, CancellationToken token);
+    string[] GetCommonContent(IEnumerable<MovieApp> actor1Content, IEnumerable<MovieApp> actor2Content);
+    string[] GetOnlyMovieCommonContent(IEnumerable<MovieApp> actor1Content, IEnumerable<MovieApp> actor2Content);
 }

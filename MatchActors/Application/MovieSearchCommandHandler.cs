@@ -23,16 +23,13 @@ internal sealed class MovieSearchCommandHandler : IRequestHandler<MatchActorsCom
         if (!actor2Content.CastMovies.Any())
             return new MatchActorsResult { Movies = Enumerable.Empty<string>() };
 
-        // фильтр MoviesOnly
-        //if (request.MoviesOnly == true)
-        //{
-        //    movs1 = movs1.Where(m => m.Role == "Actress" || m.Role == "Actor").ToArray();
-        //    movs1 = movs1.Where(m => m.Role == "Actress" || m.Role == "Actor").ToArray();
-        //}
+        var content = request.MoviesOnly
+            ? _movieSearchService.GetOnlyMovieCommonContent(actor1Content.CastMovies, actor2Content.CastMovies) 
+            : _movieSearchService.GetCommonContent(actor1Content.CastMovies, actor2Content.CastMovies);
 
         return new MatchActorsResult
         {
-            Movies = _movieSearchService.GetCommonContent(actor1Content, actor2Content)
+            Movies = content
         };
     }
 }
