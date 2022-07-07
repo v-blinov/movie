@@ -2,5 +2,5 @@
 
 internal record MovieClientResponse
 {
-    public Actor[] Results { get; init; }
+    public IEnumerable<Actor>? Results { get; init; } = Enumerable.Empty<Actor>();
 }

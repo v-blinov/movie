@@ -2,5 +2,5 @@
 
 internal record ActorContent
 {
-    public Movie[] CastMovies { get; init; }
+    public IEnumerable<Movie>? CastMovies { get; init; } = Enumerable.Empty<Movie>();
 }

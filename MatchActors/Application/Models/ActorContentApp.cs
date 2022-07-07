@@ -2,5 +2,5 @@
 
 internal record ActorContentApp
 {
-    public MovieApp[] CastMovies { get; init; }
+    public IEnumerable<MovieApp> CastMovies { get; init; }
 }

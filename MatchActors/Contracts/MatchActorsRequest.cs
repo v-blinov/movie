@@ -22,5 +22,5 @@ public record MatchActorsRequest
     ///     true - только фильмы<br/>
     ///     false - любой контент
     /// </value>
-    public bool? MoviesOnly { get; init; }
+    public bool MoviesOnly { get; init; }
 }
