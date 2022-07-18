@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchActors.Infrastructure"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D8CD28BA-42C3-48AE-930A-727D77A6FCC3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchActors.Services", "src\MatchActors.Services\MatchActors.Services.csproj", "{202A73E8-8BF9-45AF-9EA7-3BA945F15C15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{30E39017-7DB1-4B14-A13F-B2ABFCC1D656}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30E39017-7DB1-4B14-A13F-B2ABFCC1D656}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30E39017-7DB1-4B14-A13F-B2ABFCC1D656}.Release|Any CPU.Build.0 = Release|Any CPU
+		{202A73E8-8BF9-45AF-9EA7-3BA945F15C15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{202A73E8-8BF9-45AF-9EA7-3BA945F15C15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{202A73E8-8BF9-45AF-9EA7-3BA945F15C15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{202A73E8-8BF9-45AF-9EA7-3BA945F15C15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -40,5 +46,6 @@ Global
 		{ACCCA850-2FFE-4375-BBE1-7E6B87DB1BA1} = {D8CD28BA-42C3-48AE-930A-727D77A6FCC3}
 		{9D0AC7C9-878D-46B9-B7BC-5404C5534807} = {D8CD28BA-42C3-48AE-930A-727D77A6FCC3}
 		{30E39017-7DB1-4B14-A13F-B2ABFCC1D656} = {D8CD28BA-42C3-48AE-930A-727D77A6FCC3}
+		{202A73E8-8BF9-45AF-9EA7-3BA945F15C15} = {D8CD28BA-42C3-48AE-930A-727D77A6FCC3}
 	EndGlobalSection
 EndGlobal

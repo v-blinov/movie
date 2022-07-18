@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using MatchActors.Domain.InfrastructureContracts;
+using MatchActors.Services.InfrastructureContracts;
 using Npgsql;
 
 namespace MatchActors.Infrastructure.Storage;

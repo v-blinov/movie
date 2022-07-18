@@ -1,6 +1,6 @@
 using MatchActors.Domain.Dtos;
 
-namespace MatchActors.Domain.InfrastructureContracts;
+namespace MatchActors.Services.InfrastructureContracts;
 
 public interface IMovieClient
 {

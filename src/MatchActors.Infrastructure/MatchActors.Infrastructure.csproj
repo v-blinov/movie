@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MatchActors.Domain\MatchActors.Domain.csproj" />
+      <ProjectReference Include="..\MatchActors.Services\MatchActors.Services.csproj" />
     </ItemGroup>
     
 </Project>

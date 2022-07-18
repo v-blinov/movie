@@ -1,4 +1,4 @@
-﻿namespace MatchActors.Domain.InfrastructureContracts;
+﻿namespace MatchActors.Services.InfrastructureContracts;
 
 public interface IActorRepository
 {
