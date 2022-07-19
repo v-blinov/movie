@@ -2,12 +2,13 @@ using MatchActors.Domain.Services;
 using MatchActors.Infrastructure.MovieClient;
 using MatchActors.Infrastructure.Storage;
 using MatchActors.Services.InfrastructureContracts;
+using MatchActors.Services.Services;
 using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediatR(typeof(Program));
 
-builder.Services.AddScoped<IActorRepository, ActorRepository>();
+builder.Services.AddScoped<IActorService, ActorService>();
 
 builder.Services.AddScoped<IMovieSearchService, MovieSearchService>();
 
