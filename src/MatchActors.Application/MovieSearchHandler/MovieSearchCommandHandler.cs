@@ -26,8 +26,12 @@ internal sealed class MovieSearchCommandHandler : IRequestHandler<MatchActorsCom
             return new MatchActorsResult { Movies = Enumerable.Empty<string>() };
 
         var actorsCommonContent = request.MoviesOnly
-            ? _movieSearchService.GetOnlyMovieCommonContent(actor1Content.CastMovies, actor2Content.CastMovies) 
-            : _movieSearchService.GetCommonContent(actor1Content.CastMovies, actor2Content.CastMovies);
+            ? _movieSearchService.GetOnlyMovieCommonContent(
+                actor1Content.CastMovies.Select(p => p.ConvertToActorsContentItem()).ToArray(), 
+                actor2Content.CastMovies.Select(p => p.ConvertToActorsContentItem()).ToArray()) 
+            : _movieSearchService.GetCommonContent(
+                actor1Content.CastMovies.Select(p => p.ConvertToActorsContentItem()).ToArray(), 
+                actor2Content.CastMovies.Select(p => p.ConvertToActorsContentItem()).ToArray());
 
         return new MatchActorsResult
         {

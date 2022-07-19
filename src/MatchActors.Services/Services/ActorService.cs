@@ -1,5 +1,5 @@
-﻿using MatchActors.Domain.Dtos;
-using MatchActors.Domain.Exceptions;
+﻿using MatchActors.Domain.Exceptions;
+using MatchActors.Services.Dtos;
 using MatchActors.Services.InfrastructureContracts;
 
 namespace MatchActors.Services.Services;
@@ -15,17 +15,17 @@ public class ActorService : IActorService
         _movieClient = movieClient;
     }
     
-    public async Task<ActorContent> GetActorContent(string actor, CancellationToken token)
+    public async Task<ActorContentDto> GetActorContent(string actor, CancellationToken token)
     {
         var actorId = await GetActorId(actor, token);
         var actorContent = await _movieClient.GetActorContent(actorId, token);
 
         if(actorContent is null || actorContent.CastMovies is null || !actorContent.CastMovies.Any())
-            return new ActorContent { CastMovies = Enumerable.Empty<ActorsContentItem>() };
+            return new ActorContentDto { CastMovies = Enumerable.Empty<ActorsContentItemDto>() };
         
-        return new ActorContent
+        return new ActorContentDto
         {
-            CastMovies = actorContent.CastMovies.Select(p => new ActorsContentItem
+            CastMovies = actorContent.CastMovies.Select(p => new ActorsContentItemDto
             {
                 Id = p.Id,
                 Role = p.Role,

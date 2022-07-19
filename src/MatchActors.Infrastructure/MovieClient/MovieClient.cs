@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using MatchActors.Domain.Dtos;
+using MatchActors.Domain.Models;
 using MatchActors.Services.InfrastructureContracts;
 
 namespace MatchActors.Infrastructure.MovieClient;

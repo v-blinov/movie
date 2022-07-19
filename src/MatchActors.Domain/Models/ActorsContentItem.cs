@@ -1,4 +1,4 @@
-﻿namespace MatchActors.Domain.Dtos;
+﻿namespace MatchActors.Domain.Models;
 
 public record ActorsContentItem
 {

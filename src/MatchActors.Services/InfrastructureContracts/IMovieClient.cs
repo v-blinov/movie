@@ -1,4 +1,4 @@
-using MatchActors.Domain.Dtos;
+using MatchActors.Domain.Models;
 
 namespace MatchActors.Services.InfrastructureContracts;
 

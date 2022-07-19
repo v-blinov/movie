@@ -1,8 +1,8 @@
-﻿using MatchActors.Domain.Dtos;
+﻿using MatchActors.Services.Dtos;
 
 namespace MatchActors.Services.Services;
 
 public interface IActorService
 {
-    Task<ActorContent> GetActorContent(string actor, CancellationToken token);
+    Task<ActorContentDto> GetActorContent(string actor, CancellationToken token);
 }
